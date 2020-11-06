@@ -14,7 +14,7 @@
     * [x] ARP Spoofing (script Python)
 * 3 mise en place de protection
     * [ ] (G,B) Port security
-    * [ ] (A) DHCP Snooping
+    * [x] (A) DHCP Snooping
     * [ ] Dynamic ARP inspection
 * Pour chaque scénarios
     * [ ] Difficulté de mise en place
