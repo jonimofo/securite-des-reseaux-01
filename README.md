@@ -33,11 +33,7 @@
 
 ![](./images/schema.png)
 
-## Configuration des serveurs DHCP
-
-* https://linuxhint.com/dhcp_server_centos8/
-
-## CAM Flooding, port-stealing et mise en œuvre de contre-mesures
+## 3.1 CAM Flooding, port-stealing et mise en œuvre de contre-mesures
 **Table CAM (Content Addressable Memory)**
 
 Table de référence d'un Switch qui fait la relation entre une adresse MAC et un numéro de port, et contient également les paramètres VLAN associés.
@@ -56,5 +52,53 @@ L'attaquant utilise l'adresse MAC de la victime pour garnir la table CAM du Swit
 
 Ainsi l'attaquant recevra tous les paquets destinés à la victime puisque le Switch pensera alors qu'il transmet lesdits paquets à la victime (puisqu'utilisant le port renseigné par l'attaquant.)
 
+## 3.2 Mise en œuvre de la mesure de protection DHCP snooping
 
+### Insertion d'un rogue DHCP server sur un réseau local
+
+-
+
+### Configuration des serveurs DHCP
+
+* https://linuxhint.com/dhcp_server_centos8/
+
+Configuration du serveur DHCP légitime sur la VM1
+
+
+* `/etc/dhcp/dhcpd.conf`
+
+```
+default-lease-time 600;
+max-lease-time 7200;
+ddns-update-style none;
+authoritative;
+
+subnet 192.168.33.0 netmask 255.255.255.0 {
+    range 192.168.33.10 192.168.15.200;
+    option routers 192.168.33.1;
+    option subnet-mask 255.255.255.0;
+    option domain-name-servers 1.1.1.1, 8.8.8.8;
+}
+```
+
+On recupère bien la configuration DHCP sur le VM2
+
+```
+Nov 06 06:14:14 VM2 NetworkManager[798]: <info>  [1604661254.0881] dhcp4 (ens3): activation: beginning transaction (timeout in 45 seconds)
+Nov 06 06:14:14 VM2 NetworkManager[798]: <info>  [1604661254.1389] dhcp4 (ens3):   address 192.168.33.10
+Nov 06 06:14:14 VM2 NetworkManager[798]: <info>  [1604661254.1389] dhcp4 (ens3):   plen 24
+Nov 06 06:14:14 VM2 NetworkManager[798]: <info>  [1604661254.1389] dhcp4 (ens3):   expires in 594 seconds
+Nov 06 06:14:14 VM2 NetworkManager[798]: <info>  [1604661254.1390] dhcp4 (ens3):   nameserver '1.1.1.1'
+Nov 06 06:14:14 VM2 NetworkManager[798]: <info>  [1604661254.1390] dhcp4 (ens3):   nameserver '8.8.8.8'
+Nov 06 06:14:14 VM2 NetworkManager[798]: <info>  [1604661254.1390] dhcp4 (ens3):   gateway 192.168.33.1
+```
+
+On ping bien la VM1 depuis la VM2
+
+```
+[root@VM2 ~]# ping 192.168.33.1
+PING 192.168.33.1 (192.168.33.1) 56(84) bytes of data.
+64 bytes from 192.168.33.1: icmp_seq=1 ttl=64 time=4.56 ms
+64 bytes from 192.168.33.1: icmp_seq=2 ttl=64 time=11.5 ms
+```
 
