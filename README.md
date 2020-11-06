@@ -35,7 +35,11 @@ Une fois la table remplie, le trafic réseau est flood sur tous les ports car é
 
 **Port stealing Attack / Attaque par vol de port :**
 
-L'attaquant utilise l'adresse MAC de la victime pour garnir la table CAM du Switch avec le couple adresse MAC victime/Port de la machine de l'attaquant.
+L'attaquant utilise l'adresse MAC de la victime pour garnir la table CAM du Switch avec le couple :
+- Adresse MAC de la Victime
+- Port de la machine de l'attaquant
+
+Ainsi l'attaquant recevra tous les paquets destinés à la victime puisque le Switch pensera alors qu'il transmet lesdits paquets à la victime (puisqu'utilisant le port renseigné par l'attaquant.)
 
 
 
