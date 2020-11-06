@@ -25,7 +25,7 @@
 ## CAM Flooding, port-stealing et mise en œuvre de contre-mesures
 **Table CAM (Content Addressable Memory)**
 
-Table de référence d'un Switch qui fait la relation entre une adresse MAC et un numéro de port.
+Table de référence d'un Switch qui fait la relation entre une adresse MAC et un numéro de port, et contient également les paramètres VLAN associés.
 
 **CAM Flooding Attack / Attaque par saturation**
 
