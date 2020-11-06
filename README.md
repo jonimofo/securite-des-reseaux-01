@@ -232,7 +232,19 @@ SW2(config-if)#exit
 SW2(config)#exit
 ```
 
-On récupère bien le réseau dupuis les ports "trusts".
+On démare les serveurs DHCP
+
+```
+[root@M1 ~]# systemctl start dhcpd
+```
+
+```
+[root@attacker ~]# ip addr add 192.168.34.1/24 dev ens3
+[root@attacker ~]# ip addr add 192.168.33.11/24 dev ens3
+[root@attacker ~]# systemctl start dhcpd
+```
+
+On récupère bien le réseau dupuis les ports "trusts" sur la VM2.
 
 ```
 Nov 06 07:28:43 VM2 NetworkManager[782]: <info>  [1604665723.5102] dhcp4 (ens3): activation: beginning transaction (timeout in 45 seconds)
