@@ -5,16 +5,16 @@
 ## Todos
 
 * Configuration de deux serveurs DHCP (Légitime, Pirate)
-    * [ ] Serveur légitime
-    * [ ] Serveur attaquant
+    * [ ] (A) Serveur légitime
+    * [ ] (A) Serveur attaquant
 * 4 scénarios d'attaques
-    * [ ] CAM Flooding (script Python)
-    * [ ] DHCP Snooping
-    * [ ] Port Stealing (script Python)
+    * [ ] (G) CAM Flooding (script Python)
+    * [ ] (A) DHCP Snooping
+    * [ ] (B) Port Stealing (script Python)
     * [x] ARP Spoofing (script Python)
 * 3 mise en place de protection
-    * [ ] Port security
-    * [ ] DHCP Snooping
+    * [ ] (G,B) Port security
+    * [ ] (A) DHCP Snooping
     * [ ] Dynamic ARP inspection
 * Pour chaque scénarios
     * [ ] Difficulté de mise en place
