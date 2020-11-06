@@ -1,6 +1,6 @@
 # Mise en œuvre des fonctionnalités de sécurité réseau d'un switch
 
-[_TOC_]
+[[_TOC_]]
 
 ## Todos
 
