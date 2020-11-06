@@ -34,23 +34,50 @@
 ![](./images/schema.png)
 
 ## 3.1 CAM Flooding, port-stealing et mise en œuvre de contre-mesures
-**Table CAM (Content Addressable Memory)**
+
+### Rappels théoriques
+
+#### Table CAM (Content Addressable Memory)
 
 Table de référence d'un Switch qui fait la relation entre une adresse MAC et un numéro de port, et contient également les paramètres VLAN associés.
 
-**CAM Flooding Attack / Attaque par saturation**
+#### CAM Flooding Attack / Attaque par saturation
 
 L'attaque exploite les limitations matérielles et de mémoire de la table CAM du Switch. Elle consiste à envoyer de (très) nombreuses trames Ethernet au Switch. Chaque trame envoyée possède une adresse MAC source différente (généralement erronnée), dans le but de remplir l'intégralité de l'espace disponible de la table CAM.
 
 Une fois la table remplie, le trafic réseau est flood sur tous les ports car étant donné que la table CAM ne peut plus stocker d'adresses MAC, elle n'est plus en mesure de déterminer quelle adresse MAC de destination correspond à quel paquet envoyé. Le Switch agit alors comme un Hub.
 
-**Port stealing Attack / Attaque par vol de port :**
+#### Port stealing Attack / Attaque par vol de port 
 
 L'attaquant utilise l'adresse MAC de la victime pour garnir la table CAM du Switch avec le couple :
 - Adresse MAC de la Victime
 - Port de la machine de l'attaquant
 
 Ainsi l'attaquant recevra tous les paquets destinés à la victime puisque le Switch pensera alors qu'il transmet lesdits paquets à la victime (puisqu'utilisant le port renseigné par l'attaquant.)
+
+#### CAM Flooding à l'aide de scapy
+
+Afin de réaliser ce scénario d'attaque, il suffira simplement d'avoir une machine
+dans le lan et relié au switch que l'on veut corrompre et transformer en hub. A la suite
+de l'attaque, le switch enverra tout l'incoming trafic sur tous les ports sans chercher
+à faire de correspondance, exactement comme le ferait un hub.
+
+Le bout de code python se trouve ici : [scripts/cam_flooding.py](scripts/cam_flooding.py)
+
+* 1 er terminal
+```
+scp cam_flooding.py user@10.1.1.204:/home/user/
+ssh user@10.1.1.204
+```
+
+* 2 ème terminal
+```
+telnet 10.1.1.189:32771
+SW2> enable
+```
+
+* Résultat final
+![cam_flooding_proof](./images/cam_flooding.gif)
 
 ## 3.2 Mise en œuvre de la mesure de protection DHCP snooping
 
