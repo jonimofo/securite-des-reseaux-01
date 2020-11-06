@@ -5,16 +5,16 @@
 ## Todos
 
 * Configuration de deux serveurs DHCP (Légitime, Pirate)
-    * [ ] (A) Serveur légitime
-    * [ ] (A) Serveur attaquant
+    * [x] (A) Serveur légitime
+    * [x] (A) Serveur attaquant
 * 4 scénarios d'attaques
     * [ ] (G) CAM Flooding (script Python)
-    * [ ] (A) DHCP Snooping
+    * [x] (A) DHCP Snooping
     * [ ] (B) Port Stealing (script Python)
     * [x] ARP Spoofing (script Python)
 * 3 mise en place de protection
     * [ ] (G,B) Port security
-    * [ ] (A) DHCP Snooping
+    * [x] (A) DHCP Snooping
     * [ ] Dynamic ARP inspection
 * Pour chaque scénarios
     * [ ] Difficulté de mise en place
@@ -226,4 +226,59 @@ listening on ens3, link-type EN10MB (Ethernet), capture size 262144 bytes
 06:57:51.688878 00:50:00:00:04:00 > 00:50:00:00:05:00, ethertype IPv4 (0x0800), length 98: 192.168.34.10 > 1.1.1.1: ICMP echo request, id 2339, seq 9, length 64
 06:57:52.712402 00:50:00:00:04:00 > 00:50:00:00:05:00, ethertype IPv4 (0x0800), length 98: 192.168.34.10 > 1.1.1.1: ICMP echo request, id 2339, seq 10, length 64
 06:57:53.028359 00:50:00:00:04:00 > 00:50:00:00:05:00, ethertype ARP (0x0806), length 60: Reply 192.168.34.10 is-at 00:50:00:00:04:00, length 46
+```
+
+### Mise en oeuvre de DHCP snooping
+
+* Sur le premier switch
+
+```
+SW1>enable
+SW1#conf t
+SW1(config)#ip dhcp snooping
+SW1(config)#ip dhcp snooping vlan 1
+SW1(config)#int Ethernet0/0
+SW1(config-if)#ip dhcp snooping trust
+SW1(config-if)#exit
+SW1(config)#int Ethernet0/2
+SW1(config-if)#ip dhcp snooping trust
+SW1(config-if)#exit
+SW1(config)#exit
+```
+
+* Sur le deuxième switch
+
+```
+SW2>enable
+SW2#conf t
+SW2(config)#ip dhcp snooping
+SW2(config)#ip dhcp snooping vlan 1
+SW2(config)#int Ethernet0/2
+SW2(config-if)#ip dhcp snooping trust
+SW2(config-if)#exit
+SW2(config)#exit
+```
+
+On démare les serveurs DHCP
+
+```
+[root@M1 ~]# systemctl start dhcpd
+```
+
+```
+[root@attacker ~]# ip addr add 192.168.34.1/24 dev ens3
+[root@attacker ~]# ip addr add 192.168.33.11/24 dev ens3
+[root@attacker ~]# systemctl start dhcpd
+```
+
+On récupère bien le réseau dupuis les ports "trusts" sur la VM2.
+
+```
+Nov 06 07:28:43 VM2 NetworkManager[782]: <info>  [1604665723.5102] dhcp4 (ens3): activation: beginning transaction (timeout in 45 seconds)
+Nov 06 07:28:44 VM2 NetworkManager[782]: <info>  [1604665724.5579] dhcp4 (ens3):   address 192.168.33.10
+Nov 06 07:28:44 VM2 NetworkManager[782]: <info>  [1604665724.5581] dhcp4 (ens3):   plen 24
+Nov 06 07:28:44 VM2 NetworkManager[782]: <info>  [1604665724.5581] dhcp4 (ens3):   expires in 60 seconds
+Nov 06 07:28:44 VM2 NetworkManager[782]: <info>  [1604665724.5582] dhcp4 (ens3):   nameserver '1.1.1.1'
+Nov 06 07:28:44 VM2 NetworkManager[782]: <info>  [1604665724.5582] dhcp4 (ens3):   nameserver '8.8.8.8'
+Nov 06 07:28:44 VM2 NetworkManager[782]: <info>  [1604665724.5582] dhcp4 (ens3):   gateway 192.168.33.1
 ```
