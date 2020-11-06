@@ -22,18 +22,6 @@
     * [ ] GIF et vérificiations
 
 
-## Tableau d'addressage
-
-| Name     | IP            | Gateway      | Description |
-|----------|---------------|--------------|-------------|
-| VM1      | 192.168.33.1  | -            | Gateway     |
-| VM2      | 192.168.33.10 | 192.168.33.1 | Victime     |
-| Attacker | 192.168.33.11 | 192.168.33.1 | Attaquant   |
-
-## Schéma d'infrastructure
-
-![](./images/schema.png)
-
 ## CAM Flooding, port-stealing et mise en œuvre de contre-mesures
 **Table CAM (Content Addressable Memory)**
 
@@ -41,10 +29,13 @@ Table de référence d'un Switch qui fait la relation entre une adresse MAC et u
 
 **CAM Flooding Attack / Attaque par saturation**
 
-L'attaque consiste à envoyer de (très) nombreuses trames Ethernet au Switch. Chaque trame envoyée possède une adresse MAC source différente, dans le but de remplir l'intégralité de l'espace disponible de la table CAM.
+L'attaque exploite les limitations matérielles et de mémoire de la table CAM du Switch. Elle consiste à envoyer de (très) nombreuses trames Ethernet au Switch. Chaque trame envoyée possède une adresse MAC source différente (généralement erronnée), dans le but de remplir l'intégralité de l'espace disponible de la table CAM.
+
+Une fois la table remplie, le trafic réseau est flood sur tous les ports car étant donné que la table CAM ne peut plus stocker d'adresses MAC, elle n'est plus en mesure de déterminer quelle adresse MAC de destination correspond à quel paquet envoyé. Le Switch agit alors comme un Hub.
 
 **Port stealing Attack / Attaque par vol de port :**
 
 L'attaquant utilise l'adresse MAC de la victime pour garnir la table CAM du Switch avec le couple adresse MAC victime/Port de la machine de l'attaquant.
 
-## 
+
+
