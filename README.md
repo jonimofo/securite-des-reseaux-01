@@ -21,6 +21,21 @@
     * [ ] Description
     * [ ] GIF et vérificiations
 
+## Tableau d'addressage
+
+| Name     | IP            | Gateway      | Description |
+|----------|---------------|--------------|-------------|
+| VM1      | 192.168.33.1  | -            | Gateway     |
+| VM2      | 192.168.33.10 | 192.168.33.1 | Victime     |
+| Attacker | 192.168.33.11 | 192.168.33.1 | Attaquant   |
+
+## Schéma d'infrastructure
+
+![](./images/schema.png)
+
+## Configuration des serveurs DHCP
+
+* https://linuxhint.com/dhcp_server_centos8/
 
 ## CAM Flooding, port-stealing et mise en œuvre de contre-mesures
 **Table CAM (Content Addressable Memory)**
