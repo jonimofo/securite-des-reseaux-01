@@ -160,7 +160,6 @@ switchport mode access
 switchport port-security
 switchport port-security maximum 2
 switchport port-security violation restrict
-exit
 int e0/2
 switchport mode access
 switchport port-security
@@ -389,7 +388,30 @@ Cette attaque peut être effectuée :
 - Avec des **trames en broadcast** : c'est la *gratuitous ARP*. L'attaquant émet une trame ARP en broadcast dans laquelle il fait correspondre son adresse MAC à l'IP de la passerelle. De la sorte, il sera alors capable de récupérer les requêtes des clients, à chaque fois que ces derniers requêtent la passerelle
 - Avec des **trames en unicast** : l'attaquant envoie une requête vers la victime en spécifiant comme adresse IP émettrice, l'adresse IP qu'il veut usurper et en indiquant sa propre adresse MAC comme l'adresse MAC de l'émetteur. Ainsi, lorsque la victime reçoit la requête, elle enregistre la correspondance IP/MAC dans sa table ARP alors que celle-ci est erronée.
 
+## 3.4 Mise en oeuvre de la mesure de protection IP source guard
+L'attaque par **IP Spoofing**, aussi appelé attaque par l'usurpation d'adresse IP, consiste à émettre des paquets depuis un IP source n'était pas celle
+de la machine de l'attaquant. Le but étant de masquer son IP en usurpant celle d'une victime et donc de bénéficier des avantages de l'IP de la victime comme
+l'accès à certains services, à une imprimante ou directement à un serveur par exemple.
 
+* IP spoofing via [scapy](scripts/ip_spoofing.py). On se fait passer pour la VM2 qui communiquerait avec la VM1.
+![ip_spoofing](images/ip_spoofing.gif)
+
+* Configuration de l'IP Source guard (SW2)
+```bash
+en
+conf t
+int e0/0
+ip verify source
+ip verify source port-security
+int e0/1
+ip verify source
+ip verify source port-security
+exit
+exit
+```
+
+* Résultat de l'IP Spoofing avec IP source guard d'activé
+![ip_source_guard_proof](images/ip_source_guard_proof.gif)
 
 ## Commandes utiles
 
@@ -406,4 +428,14 @@ SW1# show mac address-table
 SW1# show mac address-table count
 SW1# show mac address-table aging-time
 SW1# clear mac address-table dynamic
+```
+
+* Port-security
+```bash
+SW1# show port-security
+```
+
+* IP Source guard
+```bash
+SW1# show ip source binding
 ```
