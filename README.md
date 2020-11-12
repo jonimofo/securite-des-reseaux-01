@@ -332,6 +332,17 @@ Nov 06 07:28:44 VM2 NetworkManager[782]: <info>  [1604665724.5582] dhcp4 (ens3):
 Nov 06 07:28:44 VM2 NetworkManager[782]: <info>  [1604665724.5582] dhcp4 (ens3):   gateway 192.168.33.1
 ```
 
+# 3.3 Mise en oeuvre de la mesure de protection Dynamic ARP inspection
+
+### Rappels théoriques
+L'attaque prédominente du protocole ARP est **l'ARP Spoofing**, aussi connue sous le nom ARP Cache Poisoning ou ARP Spoofing.
+
+Cette attaque peut être effectuée : 
+- Avec des **trames en broadcast** : c'est la *gratuitous ARP*. L'attaquant émet une trame ARP en broadcast dans laquelle il fait correspondre son adresse MAC à l'IP de la passerelle. De la sorte, il sera alors capable de récupérer les requêtes des clients, à chaque fois que ces derniers requêtent la passerelle
+- Avec des **trames en unicast** : l'attaquant envoie une requête vers la victime en spécifiant comme adresse IP émettrice, l'adresse IP qu'il veut usurper et en indiquant sa propre adresse MAC comme l'adresse MAC de l'émetteur. Ainsi, lorsque la victime reçoit la requête, elle enregistre la correspondance IP/MAC dans sa table ARP alors que celle-ci est erronée.
+
+
+
 ### Commandes utiles
 
 * General
