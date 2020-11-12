@@ -13,14 +13,14 @@
     * [X] (B) Port Stealing (script Python)
     * [x] ARP Spoofing (script Python)
 * 3 mise en place de protection
-    * [ ] (G,B) Port security
+    * [X] (G,B) Port security
     * [x] (A) DHCP Snooping
-    * [ ] Dynamic ARP inspection
+    * [X] Dynamic ARP inspection
 * Pour chaque scénarios
     * [ ] Difficulté de mise en place
     * [ ] Description
-    * [ ] GIF et vérificiations
-* notes
+    * [ ] GIF et vérifications
+* Notes
     * [ ] commandes utiles
 
 ## Tableau d'addressage
@@ -41,7 +41,7 @@
 
 #### Table CAM (Content Addressable Memory)
 
-Table de référence d'un Switch qui fait la relation entre une adresse MAC et un numéro de port, et contient également les paramètres VLAN associés.
+Table de référence d'un Switch qui fait la relation entre une adresse MAC et un numéro de port. Cette table contient également les paramètres VLAN associés.
 
 #### CAM Flooding Attack / Attaque par saturation
 
@@ -448,4 +448,9 @@ SW1# show mac address-table
 SW1# show mac address-table count
 SW1# show mac address-table aging-time
 SW1# clear mac address-table dynamic
+```
+
+* Désactiver le IP Domain Lookup
+```bash
+no ip domain-lookup
 ```
