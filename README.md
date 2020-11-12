@@ -205,10 +205,12 @@ Configuration du serveur DHCP légitime sur la VM1
 TYPE="Ethernet"
 PROXY_METHOD="none"
 BROWSER_ONLY="no"
-BOOTPROTO="dhcp"
+BOOTPROTO="none"
 DEFROUTE="yes"
 NAME="ens3"
 UUID="2a1f80f8-a2f9-4701-a035-4cad8fdbef0a"
+IPADDR="192.168.33.1"
+NETMASK="255.255.255.0"
 DEVICE="ens3"
 ONBOOT="yes"
 ```
@@ -395,6 +397,41 @@ La Dynamic ARP Inspection (DAI) est une fonctionnalité de sécurité développ�
 Elle gère un état de confiance sur les ports des switches et examine les requêtes & réponses ARP qui circulent sur les ports non autorisés. Dans ce sens, elle vérifiae si les données des paquets ARP correspondent aux informations émises par le serveur DHCP du réseau pour décider de laisser ou non transiter ces paquets.
 
 Ainsi un hôte propageant de fausses informations ARP aura plus de mal à se faire une place sur le réseau. Pour que cette fonction soit efficace, il **faut un réseau basé sur le dhcp.**
+
+On reconfigure le serveur DHCP ainsi que le DHCP snooping à l'aide des commandes de la section DHCP snooping.
+On vérifie que l'ARP spoofing fonctionne.
+
+Puis on configure le DAI
+
+Sur le switch SW1
+
+```
+en
+conf t
+ip arp inspection vlan 1
+int e0/0
+ip arp inspection trust
+exit
+int e0/2
+ip arp inspection trust
+exit
+exit
+```
+Sur le switch SW2
+
+```
+en
+conf t
+ip arp inspection vlan 1
+int e0/2
+ip arp inspection trust
+exit
+exit
+```
+
+On vérifie depuis l'attaquant que l'ARP spoofing n'est plus possible.
+
+![dai](./images/dai.gif)
 
 ## Commandes utiles
 
