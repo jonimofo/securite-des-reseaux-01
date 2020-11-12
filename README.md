@@ -61,6 +61,8 @@ Afin de réaliser ce scénario d'attaque, il suffira simplement d'avoir une mach
 dans le lan et relié au switch que l'on veut corrompre et transformer en hub. A la suite
 de l'attaque, le switch enverra tout l'incoming trafic sur tous les ports sans chercher
 à faire de correspondance, exactement comme le ferait un hub.
+De ce fait, un simple tcpdump ou un coup de wireshark nous permet d'observer tout ce qui
+se passe sur le réseau vu que le trafic vers le switch est forward sur tous les ports du switch.
 
 Le bout de code python se trouve ici : [scripts/cam_flooding.py](scripts/cam_flooding.py)
 
@@ -72,12 +74,46 @@ ssh user@10.1.1.204
 
 * 2 ème terminal
 ```
-telnet 10.1.1.189:32771
+telnet 10.1.1.189 32771
 SW2> enable
 ```
 
-* Résultat final
+* Résultat du flood
 ![cam_flooding_proof](./images/cam_flooding.gif)
+
+* Configuration IP de l'attaquant
+```bash
+[user@attacker ~]$ ip a | grep 192.168
+    inet 192.168.33.11/24 brd 192.168.33.255 scope global noprefixroute ens3
+```
+
+* Conséquence du flooding de la table CAM pendant que VM2 ping VM1.
+```bash
+[user@attacker ~]$ sudo tcpdump -i ens3 icmp
+tcpdump: verbose output suppressed, use -v or -vv for full protocol decode
+listening on ens3, link-type EN10MB (Ethernet), capture size 262144 bytes
+05:56:24.800957 IP 192.168.33.10 > 192.168.33.1: ICMP echo request, id 14924, seq 220, length 64
+05:56:25.824972 IP 192.168.33.10 > 192.168.33.1: ICMP echo request, id 14924, seq 221, length 64
+05:56:26.849005 IP 192.168.33.10 > 192.168.33.1: ICMP echo request, id 14924, seq 222, length 64
+05:56:27.873140 IP 192.168.33.10 > 192.168.33.1: ICMP echo request, id 14924, seq 223, length 64
+05:56:28.896551 IP 192.168.33.10 > 192.168.33.1: ICMP echo request, id 14924, seq 224, length 64
+^C
+5 packets captured
+5 packets received by filter
+0 packets dropped by kernel
+```
+
+### Mise en oeuvre de port-security
+
+* https://www.freeccnaworkbook.com/workbooks/ccna-security/protecting-the-cam-table-using-port-security
+
+Configuration des fonctionnalités de port-security cisco
+
+```bash
+telnet 10.1.1.189 32771
+SW2> enable
+SW2# show port-security
+```
 
 ## 3.2 Mise en œuvre de la mesure de protection DHCP snooping
 
