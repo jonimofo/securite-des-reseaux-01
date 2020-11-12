@@ -332,7 +332,7 @@ Nov 06 07:28:44 VM2 NetworkManager[782]: <info>  [1604665724.5582] dhcp4 (ens3):
 Nov 06 07:28:44 VM2 NetworkManager[782]: <info>  [1604665724.5582] dhcp4 (ens3):   gateway 192.168.33.1
 ```
 
-# 3.3 Mise en oeuvre de la mesure de protection Dynamic ARP inspection
+## 3.3 Mise en oeuvre de la mesure de protection Dynamic ARP inspection
 
 ### Rappels théoriques
 L'attaque prédominente du protocole ARP est **l'ARP Spoofing**, aussi connue sous le nom ARP Cache Poisoning ou ARP Spoofing.
@@ -343,7 +343,7 @@ Cette attaque peut être effectuée :
 
 
 
-### Commandes utiles
+## Commandes utiles
 
 * General
 ```bash
