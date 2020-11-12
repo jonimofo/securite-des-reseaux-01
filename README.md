@@ -57,6 +57,11 @@ L'attaquant utilise l'adresse MAC de la victime pour garnir la table CAM du Swit
 
 Ainsi l'attaquant recevra tous les paquets destinés à la victime puisque le Switch pensera alors qu'il transmet lesdits paquets à la victime (puisqu'utilisant le port renseigné par l'attaquant.)
 
+Script utilisé : [scripts/port_stealing.py](script/port_stealing)
+![port_stealing](./images/port_stealing.gif)
+
+
+
 #### CAM Flooding à l'aide de scapy
 
 Afin de réaliser ce scénario d'attaque, il suffira simplement d'avoir une machine
