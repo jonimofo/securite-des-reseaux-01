@@ -20,6 +20,8 @@
     * [ ] Difficulté de mise en place
     * [ ] Description
     * [ ] GIF et vérificiations
+* notes
+    * [ ] commandes utiles
 
 ## Tableau d'addressage
 
@@ -317,4 +319,21 @@ Nov 06 07:28:44 VM2 NetworkManager[782]: <info>  [1604665724.5581] dhcp4 (ens3):
 Nov 06 07:28:44 VM2 NetworkManager[782]: <info>  [1604665724.5582] dhcp4 (ens3):   nameserver '1.1.1.1'
 Nov 06 07:28:44 VM2 NetworkManager[782]: <info>  [1604665724.5582] dhcp4 (ens3):   nameserver '8.8.8.8'
 Nov 06 07:28:44 VM2 NetworkManager[782]: <info>  [1604665724.5582] dhcp4 (ens3):   gateway 192.168.33.1
+```
+
+### Commandes utiles
+
+* General
+```bash
+SW1> en
+SW1# conf t
+SW1(config)# no ip domain-lookup
+```
+
+* CAM Table
+```bash
+SW1# show mac address-table
+SW1# show mac address-table count
+SW1# show mac address-table aging-time
+SW1# clear mac address-table dynamic
 ```
