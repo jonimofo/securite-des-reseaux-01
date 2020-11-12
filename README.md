@@ -12,16 +12,18 @@
     * [x] (A) DHCP Snooping
     * [X] (B) Port Stealing (script Python)
     * [x] ARP Spoofing (script Python)
+    * [X] (G) IP Spoffing (script Python)
 * 3 mise en place de protection
-    * [ ] (G,B) Port security
+    * [X] (G,B) Port security
     * [x] (A) DHCP Snooping
-    * [ ] Dynamic ARP inspection
+    * [X] Dynamic ARP inspection
+    * [X] (G) IP Source Guard
 * Pour chaque scénarios
     * [ ] Difficulté de mise en place
-    * [ ] Description
-    * [ ] GIF et vérificiations
-* notes
-    * [ ] commandes utiles
+    * [X] Description
+    * [X] GIF et vérifications
+* Notes
+    * [X] commandes utiles
 
 ## Tableau d'addressage
 
@@ -41,7 +43,7 @@
 
 #### Table CAM (Content Addressable Memory)
 
-Table de référence d'un Switch qui fait la relation entre une adresse MAC et un numéro de port, et contient également les paramètres VLAN associés.
+Table de référence d'un Switch qui fait la relation entre une adresse MAC et un numéro de port. Cette table contient également les paramètres VLAN associés.
 
 #### CAM Flooding Attack / Attaque par saturation
 
@@ -204,10 +206,12 @@ Configuration du serveur DHCP légitime sur la VM1
 TYPE="Ethernet"
 PROXY_METHOD="none"
 BROWSER_ONLY="no"
-BOOTPROTO="dhcp"
+BOOTPROTO="none"
 DEFROUTE="yes"
 NAME="ens3"
 UUID="2a1f80f8-a2f9-4701-a035-4cad8fdbef0a"
+IPADDR="192.168.33.1"
+NETMASK="255.255.255.0"
 DEVICE="ens3"
 ONBOOT="yes"
 ```
@@ -388,6 +392,48 @@ Cette attaque peut être effectuée :
 - Avec des **trames en broadcast** : c'est la *gratuitous ARP*. L'attaquant émet une trame ARP en broadcast dans laquelle il fait correspondre son adresse MAC à l'IP de la passerelle. De la sorte, il sera alors capable de récupérer les requêtes des clients, à chaque fois que ces derniers requêtent la passerelle
 - Avec des **trames en unicast** : l'attaquant envoie une requête vers la victime en spécifiant comme adresse IP émettrice, l'adresse IP qu'il veut usurper et en indiquant sa propre adresse MAC comme l'adresse MAC de l'émetteur. Ainsi, lorsque la victime reçoit la requête, elle enregistre la correspondance IP/MAC dans sa table ARP alors que celle-ci est erronée.
 
+### Dynamic ARP Inspection
+La Dynamic ARP Inspection (DAI) est une fonctionnalité de sécurité développée et implémentée par Cisco. Elle s'appuie sur le **DHCP Snooping** pour vérifier qu’une adresse MAC à bien obtenu son IP via le serveur DHCP trusté.
+
+Elle gère un état de confiance sur les ports des switches et examine les requêtes & réponses ARP qui circulent sur les ports non autorisés. Dans ce sens, elle vérifiae si les données des paquets ARP correspondent aux informations émises par le serveur DHCP du réseau pour décider de laisser ou non transiter ces paquets.
+
+Ainsi un hôte propageant de fausses informations ARP aura plus de mal à se faire une place sur le réseau. Pour que cette fonction soit efficace, il **faut un réseau basé sur le dhcp.**
+
+On reconfigure le serveur DHCP ainsi que le DHCP snooping à l'aide des commandes de la section DHCP snooping.
+On vérifie que l'ARP spoofing fonctionne.
+
+Puis on configure le DAI
+
+Sur le switch SW1
+
+```
+en
+conf t
+ip arp inspection vlan 1
+int e0/0
+ip arp inspection trust
+exit
+int e0/2
+ip arp inspection trust
+exit
+exit
+```
+Sur le switch SW2
+
+```
+en
+conf t
+ip arp inspection vlan 1
+int e0/2
+ip arp inspection trust
+exit
+exit
+```
+
+On vérifie depuis l'attaquant que l'ARP spoofing n'est plus possible.
+
+![dai](./images/dai.gif)
+
 ## 3.4 Mise en oeuvre de la mesure de protection IP source guard
 L'attaque par **IP Spoofing**, aussi appelé attaque par l'usurpation d'adresse IP, consiste à émettre des paquets depuis un IP source n'était pas celle
 de la machine de l'attaquant. Le but étant de masquer son IP en usurpant celle d'une victime et donc de bénéficier des avantages de l'IP de la victime comme
@@ -415,13 +461,6 @@ exit
 
 ## Commandes utiles
 
-* General
-```bash
-SW1> en
-SW1# conf t
-SW1(config)# no ip domain-lookup
-```
-
 * CAM Table
 ```bash
 SW1# show mac address-table
@@ -438,4 +477,9 @@ SW1# show port-security
 * IP Source guard
 ```bash
 SW1# show ip source binding
+```
+
+* Désactiver le IP Domain Lookup
+```bash
+SW1(config)# no ip domain-lookup
 ```
