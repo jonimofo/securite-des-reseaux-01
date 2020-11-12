@@ -8,9 +8,9 @@
     * [x] (A) Serveur légitime
     * [x] (A) Serveur attaquant
 * 4 scénarios d'attaques
-    * [ ] (G) CAM Flooding (script Python)
+    * [X] (G) CAM Flooding (script Python)
     * [x] (A) DHCP Snooping
-    * [ ] (B) Port Stealing (script Python)
+    * [X] (B) Port Stealing (script Python)
     * [x] ARP Spoofing (script Python)
 * 3 mise en place de protection
     * [ ] (G,B) Port security
@@ -111,11 +111,59 @@ listening on ens3, link-type EN10MB (Ethernet), capture size 262144 bytes
 
 Configuration des fonctionnalités de port-security cisco
 
+* Connexion respectivement au SW1 et au SW2
 ```bash
+telnet 10.1.1.189 32770
 telnet 10.1.1.189 32771
-SW2> enable
-SW2# show port-security
 ```
+
+* Configuration du SW1
+```bash
+en
+conf t
+int e0/0
+switchport mode access
+switchport port-security
+switchport port-security maximum 1
+switchport port-security violation restrict
+int e0/2
+switchport mode access
+switchport port-security
+switchport port-security maximum 1
+switchport port-security violation restrict
+exit
+exit
+```
+
+* Configuration du SW2
+```bash
+en
+conf t
+int e0/0
+switchport mode access
+switchport port-security
+switchport port-security maximum 2
+switchport port-security violation restrict
+int e0/1
+switchport mode access
+switchport port-security
+switchport port-security maximum 2
+switchport port-security violation restrict
+exit
+int e0/2
+switchport mode access
+switchport port-security
+switchport port-security maximum 2
+switchport port-security violation restrict
+exit
+exit
+```
+
+* Résultat lors d'une tentative de Port stealing
+![](./images/port-security-port-stealing.gif)
+
+* Résultat lors d'une tentative de CAM flooding
+![](./images/port-security-cam-flooding.gif)
 
 ## 3.2 Mise en œuvre de la mesure de protection DHCP snooping
 
