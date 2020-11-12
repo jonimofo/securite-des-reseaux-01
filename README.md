@@ -389,7 +389,12 @@ Cette attaque peut être effectuée :
 - Avec des **trames en broadcast** : c'est la *gratuitous ARP*. L'attaquant émet une trame ARP en broadcast dans laquelle il fait correspondre son adresse MAC à l'IP de la passerelle. De la sorte, il sera alors capable de récupérer les requêtes des clients, à chaque fois que ces derniers requêtent la passerelle
 - Avec des **trames en unicast** : l'attaquant envoie une requête vers la victime en spécifiant comme adresse IP émettrice, l'adresse IP qu'il veut usurper et en indiquant sa propre adresse MAC comme l'adresse MAC de l'émetteur. Ainsi, lorsque la victime reçoit la requête, elle enregistre la correspondance IP/MAC dans sa table ARP alors que celle-ci est erronée.
 
+### Dynamic ARP Inspection
+La Dynamic ARP Inspection (DAI) est une fonctionnalité de sécurité développée et implémentée par Cisco. Elle s'appuie sur le **DHCP Snooping** pour vérifier qu’une adresse MAC à bien obtenu son IP via le serveur DHCP trusté.
 
+Elle gère un état de confiance sur les ports des switches et examine les requêtes & réponses ARP qui circulent sur les ports non autorisés. Dans ce sens, elle vérifiae si les données des paquets ARP correspondent aux informations émises par le serveur DHCP du réseau pour décider de laisser ou non transiter ces paquets.
+
+Ainsi un hôte propageant de fausses informations ARP aura plus de mal à se faire une place sur le réseau. Pour que cette fonction soit efficace, il **faut un réseau basé sur le dhcp.**
 
 ## Commandes utiles
 
