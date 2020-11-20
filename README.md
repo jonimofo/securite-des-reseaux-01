@@ -7,13 +7,14 @@
 * Configuration de deux serveurs DHCP (Légitime, Pirate)
     * [x] (A) Serveur légitime
     * [x] (A) Serveur attaquant
-* 4 scénarios d'attaques
+* 6 scénarios d'attaques
     * [X] (G) CAM Flooding (script Python)
     * [x] (A) DHCP Snooping
     * [X] (B) Port Stealing (script Python)
     * [x] ARP Spoofing (script Python)
     * [X] (G) IP Spoffing (script Python)
-* 3 mise en place de protection
+    * [ ] (X) ICMP redirects
+* 4 mise en place de protection
     * [X] (G,B) Port security
     * [x] (A) DHCP Snooping
     * [X] Dynamic ARP inspection
@@ -463,6 +464,39 @@ exit
 
 * Résultat de l'IP Spoofing avec IP source guard d'activé
 ![ip_source_guard_proof](images/ip_source_guard_proof.gif)
+
+## 3.5 ICMP redirects
+
+### Rappels théoriques
+L'ICMP redirects est une attaque visant à détourner l'utilité des messages ICMP de type 5 (redirection).  
+Ces messages servent habituellement à optimiser la route choisie par un ordinateur et permettent donc  
+dans certains cas d'éviter des sauts inutiles en modifiant la table de routage de l'ordinateur émetteur.  
+Dans l'exemple où une machine host se trouve dans le même réseau que son routeur, et que son routeur ensuite  
+redirige vers un autre routeur qui lui sait où se trouve le remote server à atteindre alors seulement le  
+premier routeur va envoyer un ICMP redirects à la machine host qui a voulu communiquer avec le remote server.  
+Mais utilisé de manière malhonnête, ce message de type 5 peut servir à éviter un routeur ou un pare-feu en  
+envoyant nous-même un ICMP de type 5 à une machine victime pour lui dire de passer par notre machine pirate.  
+Ce qui est important aussi à comprendre avec cette attaque c'est qu'elle permet seulement de récupérer le  
+traffic qui part de l'utilisateur vers le remote server, mais parfois ça suffit car c'est l'utilisateur qui  
+envoie les credentials au server. 
+
+Mais cette attaque a stoppé de fonctionner après WindowsXP et Linux pour versions de kernel post 2.6.38.  
+La sécurité mise en place a été un check de l'ip source du paquet ICMP redirects afin de vérifier si elle  
+correspond avec l'ip courante de la gateway. Ils ont aussi arrếté de passer par la table de routage mais  
+par une FIB (forwarding information base) pour de meilleure performance et pour forcer à cibler le trafic  
+sur une interface précise. Et la plus importante partie vient du fait qu'ils ont céssé de traiter les  
+requêtes ICMP depuis `icmp.c` mais en les traitant avec les outils permettant de gérér la couche au dessus,  
+c'est à dire depuis la couche 4 avec tcp ou udp par exemple. (`tcp_ipv4.c` | `udp_ipv4.c`)
+
+### Rappels pratiques
+```bash
+hping3 -I <iface> -C 5 -K 1 -c <count> \
+    -a <current_gw> \
+    --icmp-ipdst <target> \
+    --icmp-gw <attacker> \
+    --icmp-ipsrc <victim> \
+    <victim>
+```
 
 ## Commandes utiles
 
