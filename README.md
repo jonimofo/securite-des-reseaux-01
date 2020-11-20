@@ -136,13 +136,15 @@ en
 conf t
 int e0/0
 switchport mode access
+switchport access vlan 1
 switchport port-security
 switchport port-security maximum 1
 switchport port-security violation restrict
 int e0/2
 switchport mode access
+switchport access vlan 1
 switchport port-security
-switchport port-security maximum 1
+switchport port-security maximum 3
 switchport port-security violation restrict
 exit
 exit
@@ -154,16 +156,19 @@ en
 conf t
 int e0/0
 switchport mode access
+switchport access vlan 1
 switchport port-security
-switchport port-security maximum 2
+switchport port-security maximum 1
 switchport port-security violation restrict
 int e0/1
 switchport mode access
+switchport access vlan 1
 switchport port-security
-switchport port-security maximum 2
+switchport port-security maximum 1
 switchport port-security violation restrict
 int e0/2
 switchport mode access
+switchport access vlan 1
 switchport port-security
 switchport port-security maximum 2
 switchport port-security violation restrict
